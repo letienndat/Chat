@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <title>Đăng nhập</title>
+    <script src="../service/index.js"></script>
+    <script src="../config/index.js"></script>
+    <script src="../service/validate.js" async defer onload="validate()"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="963847850304-16mnspbcgknhpoj12mrg2dgmehp4f0fd.apps.googleusercontent.com">
+</head>
+
+<body class="none">
+    <div class="header">
+        <img src="../resources/logo-deep.svg" alt="Logo">
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="div-background">
+                <div class="background circle-1">
+                    <div class="circle-blur">
+
+                    </div>
+                </div>
+                <div class="background">
+                    <div class="circle-blur">
+
+                    </div>
+                </div>
+            </div>
+            <div class="description sub-container">
+                <div class="content-text-des">
+                    <div class="title">
+                        <h2>Đăng nhập để<br>kết nối</h2>
+                    </div>
+                    <div class="text">
+                        <span>Nếu chưa có tài khoản Đăng <br>ký tại
+                            <a href="../signup/index.html">đây!</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="background-image image-signin sub-container">
+                <img src="../resources/background-image-signin.svg" alt="Background image">
+            </div>
+            <div class="div-form sub-container">
+                <div class="header">
+                    <div class="null"></div>
+                    <div class="choose-language">
+                        <select name="choose-language" id="choose-language">
+                            <option value="vi">Tiếng Việt</option>
+                            <option value="en">English</option>
+                        </select>
+                        <div class="line-bottom"></div>
+                    </div>
+                    <div class="choose-page">
+                        <div class="btn-choose-page btn-signin">
+                            <div class="content-btn">
+                                <a href="index.html">Đăng nhập</a>
+                            </div>
+                            <div class="line-bottom"></div>
+                        </div>
+                        <div class="btn-choose-page btn-signup">
+                            <div class="content-btn">
+                                <a href="../signup/index.html">Đăng ký</a>
+                            </div>
+                            <div class="line-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form">
+                    <div class="null"></div>
+                    <div class="form-1">
+                        <form action="" method="post">
+                            <div class="header">
+                            </div>
+                            <div class="form-control">
+                                <input type="text" name="username" id="input_username" placeholder="Nhập tài khoản">
+                                <div class="option">
+                                    <img src="../resources/icon-x-enter-input.svg" onclick="remove_value()"
+                                        alt="Delete">
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <input type="password" name="password" id="input_password" placeholder="••••••••">
+                                <div class="option">
+                                    <img src="../resources/icon-show-or-hide-enter-input.svg" onclick="show_password()"
+                                        alt="Show">
+                                </div>
+                            </div>
+                            <div class="div-forgot-password">
+                                <span>Quên mật khẩu ?</span>
+                            </div>
+                            <div class="div-btn-submit">
+                                <button type="submit" onclick="submitFormSignin(event)">Đăng nhập</button>
+                            </div>
+                            <div class="notify-submit none">
+                                <span>Đăng nhập không thành công!</span>
+                            </div>
+                        </form>
+                        <div class="other-connect">
+                            <div class="header">
+                                <div class="line"></div>
+                                <div class="title">
+                                    <span>Hoặc tiếp tục với</span>
+                                </div>
+                                <div class="line"></div>
+                            </div>
+                            <div class="content">
+                                <div class="item">
+                                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                                </div>
+                                <div class="item">
+                                    <img src="../resources/icon-apple.svg" alt="Apple">
+                                </div>
+                                <div class="item">
+                                    <img src="../resources/icon-facebook.svg" alt="Facebook">
+                                </div>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="main.js"></script>
+<script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+        console.log('ID Token: ' + id_token);
+
+        fetch('/api/google-signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id_token: id_token })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Login successful!');
+            } else {
+                console.log('Login failed.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</html>
